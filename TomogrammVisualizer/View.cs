@@ -1,5 +1,9 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace TomogrammVisualizer
@@ -8,13 +12,20 @@ namespace TomogrammVisualizer
     {
         public void SetupView(int width, int height)
         {
+            // Левосторонняя система:
+            //
+            // начало координат - нижний левый угол:
+            //     оси {X,Y,Z} -> положительные направления {вправо, вверх, веред}
+            //     Matrix4.CreateRotation{X,Y,Z} вращает вокруг ОСИ против часовой стрелки
+
+            //Matrix4.CreateRotationX(45f * (float)Math.PI / 180f, out Matrix4 rotX); - вращает вокруг оси
+            //GL.Rotate(-30f * (float)Math.PI / 180f, vector); // вращает вокруг вектора 
             GL.ShadeModel(ShadingModel.Smooth);
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            GL.Ortho(0, Bin.X, 0, Bin.Y, -1, 1);
+            GL.Frustum(0, Bin.X, 0, Bin.Y, -512, 512);
+            GL.Ortho(0, Bin.X, 0, Bin.Y, -1, 512);
             GL.Viewport(0, 0, width, height);
-
-
         }
 
         protected Color TransferFunction(short value, int min, int width)

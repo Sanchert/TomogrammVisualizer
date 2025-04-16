@@ -1,5 +1,7 @@
-﻿using System;
+﻿using OpenTK;
+using System;
 using System.Windows.Forms;
+using OpenTK.Graphics.OpenGL;
 
 namespace TomogrammVisualizer
 {
@@ -127,39 +129,45 @@ namespace TomogrammVisualizer
             needReload = true;
         }
 
+        private void Foo(int max, Mode _mode)
+        {
+            trackBar1.Maximum = max;
+            int k = Clamp(currentLayer, trackBar1.Minimum, trackBar1.Maximum);
+            trackBar1.Value = k;
+            currentLayer = k;
+            mode = _mode;
+        }
+        private int Clamp(int value, int min, int max)
+        {
+            if (value < min)
+                return min;
+            if (value > max)
+                return max;
+            return value;
+        }
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            mode = Mode.Quads_H;
-            trackBar1.Maximum = Bin.Z - 1;
-            trackBar1.Value = trackBar1.Minimum;
+            Foo(Bin.Z - 1, Mode.Quads_H);
         }
 
         private void radioButton2_CheckedChanged_1(object sender, EventArgs e)
         {
-            mode = Mode.QuadStrip_H;
-            trackBar1.Maximum = Bin.Z - 1;
-            trackBar1.Value = trackBar1.Minimum;
+            Foo(Bin.Z - 1, Mode.QuadStrip_H);
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            mode = Mode.Texture;
-            trackBar1.Maximum = Bin.Z - 1;
-            trackBar1.Value = trackBar1.Minimum;
+            Foo(Bin.Z - 1, Mode.Texture);
         }
 
         private void radioButton4_CheckedChanged(object sender, EventArgs e)
         {
-            mode = Mode.Quads_V;
-            trackBar1.Maximum = Bin.Y - 1;
-            trackBar1.Value = trackBar1.Minimum;
+            Foo(Bin.Y - 1, Mode.Quads_V);
         }
 
         private void radioButton5_CheckedChanged(object sender, EventArgs e)
         {
-            mode = Mode.QuadStrip_V;
-            trackBar1.Maximum = Bin.Y - 1;
-            trackBar1.Value = trackBar1.Minimum;
+            Foo(Bin.Y - 1, Mode.QuadStrip_V);
         }
     }
 }
