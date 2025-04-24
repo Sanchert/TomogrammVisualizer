@@ -5,6 +5,7 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using static System.Windows.Forms.AxHost;
 
 namespace TomogrammVisualizer
 {
@@ -32,7 +33,7 @@ namespace TomogrammVisualizer
         {
             int max = min + width;
             int newVal = Clamp((value - min) * 255 / (max - min + 1), 0, 255);
-            return Color.FromArgb(newVal, newVal, newVal);
+            return Color.FromArgb(255, newVal, newVal, newVal);
         }
 
         private int Clamp(int value, int min, int max)
@@ -74,6 +75,48 @@ namespace TomogrammVisualizer
                 }
             GL.End();
         }
+
+
+        public void DrawTriangle(int layerNumber, int min, int width)
+        {
+            if (layerNumber < 0)
+                layerNumber = 0;
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            for (int x = 1; x < Bin.X - 1; x++)
+            {
+                GL.Begin(BeginMode.Triangles);
+                for (int y = 1; y < Bin.Y - 1; y++)
+                {
+                    short val;
+                    val = Bin.array[x + y * Bin.X + layerNumber * Bin.X * Bin.Y];
+                    GL.Color3(TransferFunction(val, min, width));
+                    GL.Vertex2(x, y);
+
+                    val = Bin.array[x + 1 + y * Bin.X + layerNumber * Bin.X * Bin.Y];
+                    GL.Color3(TransferFunction(val, min, width));
+                    GL.Vertex2(x + 1, y);
+
+                    val = Bin.array[x + (y - 1) * Bin.X + layerNumber * Bin.X * Bin.Y];
+                    GL.Color3(TransferFunction(val, min, width));
+                    GL.Vertex2(x, (y - 1));
+                    //
+                    val = Bin.array[x + y * Bin.X + layerNumber * Bin.X * Bin.Y];
+                    GL.Color3(TransferFunction(val, min, width));
+                    GL.Vertex2(x, y);
+
+                    val = Bin.array[x + 1 + y * Bin.X + layerNumber * Bin.X * Bin.Y];
+                    GL.Color3(TransferFunction(val, min, width));
+                    GL.Vertex2(x + 1, y);
+
+                    val = Bin.array[x + 1 + (y + 1) * Bin.X + layerNumber * Bin.X * Bin.Y];
+                    GL.Color3(TransferFunction(val, min, width));
+                    GL.Vertex2(x + 1, (y + 1));
+                }
+                GL.End();
+            }
+        }
+
 
 
         public void DrawQuads(int layerNumber, int min, int width)

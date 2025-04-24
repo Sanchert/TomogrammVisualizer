@@ -21,7 +21,8 @@ namespace TomogrammVisualizer
             Quads_V,
             QuadStrip_H,
             QuadStrip_V,
-            Texture
+            Texture,
+            Triangle
         };
         private Mode mode = Mode.Quads_H;
         
@@ -107,6 +108,12 @@ namespace TomogrammVisualizer
                         view.DrawQuadStripVertical(currentLayer, min, width);
                         glControl1.SwapBuffers();
                         break;
+                    case Mode.Triangle:
+                        view.DrawTriangle(currentLayer, min, width);
+                        glControl1.SwapBuffers();
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -168,6 +175,11 @@ namespace TomogrammVisualizer
         private void radioButton5_CheckedChanged(object sender, EventArgs e)
         {
             Foo(Bin.Y - 1, Mode.QuadStrip_V);
+        }
+
+        private void radioButton6_CheckedChanged(object sender, EventArgs e)
+        {
+            Foo(Bin.Z - 1, Mode.Triangle);
         }
     }
 }
